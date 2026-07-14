@@ -1,6 +1,9 @@
 # Use Node.js 18 Alpine as base image
 FROM node:18-alpine
 
+# Force cache bust — Railway was caching stale Docker layers
+ARG CACHE_BUST=1
+
 # Set working directory
 WORKDIR /app
 
