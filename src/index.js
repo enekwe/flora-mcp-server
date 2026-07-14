@@ -732,10 +732,13 @@ class FloraMcpServerMicroservice {
     this.server = this.app.listen(PORT, () => {
       logger.info(`Flora MCP Server Microservice running on port ${PORT}`);
       logger.info(`Environment: ${config.NODE_ENV}`);
-      logger.info(`Health check: http://localhost:${PORT}/health`);
-      logger.info(`MCP tools: http://localhost:${PORT}/api/mcp/tools/*`);
-      logger.info(`API key management: http://localhost:${PORT}/api-keys`);
-      logger.info(`Schema: http://localhost:${PORT}/schema/mcp-config`);
+      const host = config.NODE_ENV === 'production'
+        ? `flora-mcp-server.railway.internal`
+        : 'localhost';
+      logger.info(`Health check: http://${host}:${PORT}/health`);
+      logger.info(`MCP tools: http://${host}:${PORT}/api/mcp/tools/*`);
+      logger.info(`API key management: http://${host}:${PORT}/api-keys`);
+      logger.info(`Schema: http://${host}:${PORT}/schema/mcp-config`);
     });
 
     process.on('SIGTERM', () => this.gracefulShutdown('SIGTERM'));

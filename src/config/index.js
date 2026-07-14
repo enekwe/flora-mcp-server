@@ -11,12 +11,13 @@ module.exports = {
   MONGODB_TEST_URI: process.env.MONGODB_TEST_URI,
 
   // Monolith API (for proxying to command-center-service and core services)
-  MONOLITH_API_URL: process.env.MONOLITH_API_URL || 'http://localhost:3001',
-  COMMAND_CENTER_API_URL: process.env.COMMAND_CENTER_API_URL || 'http://localhost:4000',
+  MONOLITH_API_URL: process.env.MONOLITH_API_URL || 'http://api.railway.internal:3001',
+  COMMAND_CENTER_API_URL: process.env.COMMAND_CENTER_API_URL || 'http://flora-command-center.railway.internal:4000',
 
   // Encryption
   CREDENTIAL_ENCRYPTION_KEY: process.env.CREDENTIAL_ENCRYPTION_KEY,
   JWT_SECRET: process.env.JWT_SECRET,
+  INTERNAL_SERVICE_TOKEN: process.env.INTERNAL_SERVICE_TOKEN,
 
   // MCP-specific
   MCP_API_KEY_PREFIX: process.env.MCP_API_KEY_PREFIX || 'flora_mcp_',
@@ -28,7 +29,7 @@ module.exports = {
   // CORS
   ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(',')
-    : ['http://localhost:3000', 'http://localhost:5173'],
+    : ['https://flora.passbook.vc'],
 
   // Rate Limiting
   RATE_LIMIT_WINDOW_MS: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'),
