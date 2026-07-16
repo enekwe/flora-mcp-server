@@ -146,8 +146,9 @@ LABEL maintainer="Flora Team" \
       app.part-of="flora-platform"
 
 # Production environment variables with secure defaults
+# NOTE: PORT is NOT set here to allow Railway's dynamic PORT injection
+# The application code defaults to 4005 if PORT is not provided
 ENV NODE_ENV=production \
-    PORT=4005 \
     LOG_LEVEL=info \
     LOG_FORMAT=json \
     NODE_OPTIONS="--max-old-space-size=512 --enable-source-maps" \
