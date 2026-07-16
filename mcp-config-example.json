@@ -1,0 +1,20 @@
+{
+  "$comment": "MCP Configuration for Claude Code - Copy to ~/.config/Claude/mcp.json",
+  "mcpServers": {
+    "flora": {
+      "command": "node",
+      "args": [
+        "/absolute/path/to/Passbook_Oracle/microservices/flora-mcp-server/server.js"
+      ],
+      "env": {
+        "MCP_API_TOKEN": "flora_mcp_YOUR_API_KEY_HERE",
+        "MCP_TRANSPORT_MODE": "stdio",
+        "MONGODB_URI": "mongodb://localhost:27017/flora",
+        "JWT_SECRET": "your-jwt-secret-from-main-env",
+        "MONOLITH_API_URL": "http://localhost:3001",
+        "INTERNAL_SERVICE_TOKEN": "internal-service-token",
+        "NODE_ENV": "development"
+      }
+    }
+  }
+}
