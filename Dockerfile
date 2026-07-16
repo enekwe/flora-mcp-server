@@ -133,8 +133,9 @@ USER flora-mcp
 EXPOSE 4005
 
 # Enhanced health check (uses Railway's injected PORT)
+# NOTE: Uses sh -c to ensure PORT variable expansion works correctly
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f "http://localhost:${PORT:-4005}/health" || exit 1
+    CMD sh -c 'curl -f "http://localhost:${PORT:-4005}/health" || exit 1'
 
 # Labels for container management
 LABEL maintainer="Flora Team" \
