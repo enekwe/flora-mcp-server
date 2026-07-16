@@ -39,8 +39,8 @@
         "NODE_ENV": {
           "default": "production"
         },
-        "MCP_TRANSPORT_MODE": {
-          "default": "sse"
+        "PORT": {
+          "default": "4005"
         },
         "LOG_LEVEL": {
           "default": "info"

@@ -6,10 +6,10 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const { MongoMemoryServer } = require('mongodb-memory-server');
-const FloraMcpServer = require('../server');
+const FloraMcpServer = require('../src/index');
 const { authenticateJWT, validateMcpConnection } = require('../auth/jwtAuth');
 const McpApiKey = require('../src/models/McpApiKey');
-const AuditLog = require('../../../models/AuditLog');
+const AuditLog = require('../src/models/AuditLog');
 
 // Mock environment variables
 process.env.JWT_SECRET = 'test-jwt-secret-for-testing-purposes-only';
