@@ -25,6 +25,13 @@ require('dotenv').config();
 
 const logger = require('./src/config/logger');
 
+// Debug: Log Railway environment variable injection
+console.log('[SERVER.JS] Loaded dotenv, checking Railway environment...');
+console.log('[SERVER.JS] NODE_ENV:', process.env.NODE_ENV);
+console.log('[SERVER.JS] PORT:', process.env.PORT || 'NOT SET');
+console.log('[SERVER.JS] RAILWAY_ENVIRONMENT:', process.env.RAILWAY_ENVIRONMENT || 'NOT SET');
+console.log('[SERVER.JS] Total env vars:', Object.keys(process.env).length);
+
 // Validate critical environment variables
 const requiredEnvVars = ['MONGODB_URI', 'JWT_SECRET', 'MONOLITH_API_URL', 'INTERNAL_SERVICE_TOKEN'];
 const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);

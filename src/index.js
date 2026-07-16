@@ -727,7 +727,10 @@ class FloraMcpServerMicroservice {
   }
 
   async start() {
-    const PORT = config.PORT || 4005;
+    const PORT = config.PORT; // No fallback - config.PORT already handles this
+
+    logger.info(`[START] Starting server with PORT=${PORT} from config`);
+    logger.info(`[START] config.PORT=${config.PORT}, process.env.PORT=${process.env.PORT}`);
 
     this.server = this.app.listen(PORT, () => {
       logger.info(`Flora MCP Server Microservice running on port ${PORT}`);

@@ -8,11 +8,27 @@ const mongoKeys = Object.keys(process.env).filter(k => k.includes('MONGO') || k.
 console.log('[CONFIG DEBUG] ENV keys matching MONGO/URI/DATABASE:', mongoKeys.join(', ') || 'NONE FOUND');
 console.log('[CONFIG DEBUG] MONGODB_URI:', process.env.MONGODB_URI ? `present (${process.env.MONGODB_URI.substring(0, 25)}...)` : 'UNDEFINED');
 console.log('[CONFIG DEBUG] NODE_ENV:', process.env.NODE_ENV || 'undefined');
+console.log('[CONFIG DEBUG] PORT from process.env.PORT:', process.env.PORT || 'UNDEFINED');
+console.log('[CONFIG DEBUG] All PORT-related env keys:', Object.keys(process.env).filter(k => k.includes('PORT')).join(', ') || 'NONE FOUND');
+
+// In production, Railway MUST inject PORT - fail explicitly if it doesn't
+const getPort = () => {
+  if (process.env.NODE_ENV === 'production') {
+    if (!process.env.PORT) {
+      console.error('[CRITICAL] Railway did not inject PORT environment variable!');
+      console.error('[CRITICAL] Available env keys:', Object.keys(process.env).join(', '));
+      throw new Error('PORT environment variable is required in production but was not provided by Railway');
+    }
+    return parseInt(process.env.PORT, 10);
+  }
+  // Development fallback
+  return parseInt(process.env.PORT || '4005', 10);
+};
 
 module.exports = {
   // Server
   NODE_ENV: process.env.NODE_ENV || 'development',
-  PORT: process.env.PORT || 4005,
+  PORT: getPort(),
   SERVICE_NAME: process.env.SERVICE_NAME || 'flora-mcp-server',
 
   // Database (isolated per microservice per Flora Development Rules)
