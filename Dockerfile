@@ -134,7 +134,7 @@ EXPOSE 4005
 
 # Enhanced health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:4005/health || exit 1
+    CMD curl -f "http://localhost:${PORT:-4005}/health" || exit 1
 
 # Labels for container management
 LABEL maintainer="Flora Team" \
@@ -147,7 +147,6 @@ LABEL maintainer="Flora Team" \
 
 # Production environment variables with secure defaults
 ENV NODE_ENV=production \
-    PORT=4005 \
     LOG_LEVEL=info \
     LOG_FORMAT=json \
     NODE_OPTIONS="--max-old-space-size=512 --enable-source-maps" \
