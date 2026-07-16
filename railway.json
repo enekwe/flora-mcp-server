@@ -39,9 +39,6 @@
         "NODE_ENV": {
           "default": "production"
         },
-        "PORT": {
-          "default": "4005"
-        },
         "LOG_LEVEL": {
           "default": "info"
         },
