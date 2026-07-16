@@ -139,10 +139,10 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 
 # Labels for container management
 LABEL maintainer="Flora Team" \
-      version="1.0.0" \
+      version="1.0.1" \
       description="Flora MCP Server — IDE/CLI bridge to Command Center" \
       app.name="flora-mcp-server" \
-      app.version="1.0.0" \
+      app.version="1.0.1" \
       app.component="microservice" \
       app.part-of="flora-platform"
 
