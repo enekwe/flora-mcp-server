@@ -5,7 +5,7 @@
     "dockerfilePath": "Dockerfile"
   },
   "deploy": {
-    "startCommand": "dumb-init --single-child -- node src/index.js",
+    "startCommand": "dumb-init --single-child -- node server.js",
     "healthcheckPath": "/health",
     "healthcheckTimeout": 30,
     "healthcheckInterval": 30,
@@ -34,13 +34,13 @@
     "mcp-server": {
       "builder": "DOCKERFILE",
       "dockerfilePath": "Dockerfile",
-      "startCommand": "dumb-init --single-child -- node src/index.js",
+      "startCommand": "dumb-init --single-child -- node server.js",
       "variables": {
         "NODE_ENV": {
           "default": "production"
         },
-        "PORT": {
-          "default": "4005"
+        "MCP_TRANSPORT_MODE": {
+          "default": "sse"
         },
         "LOG_LEVEL": {
           "default": "info"

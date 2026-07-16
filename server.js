@@ -43,7 +43,8 @@ const logger = require('./src/config/logger');
 const MCP_PROTOCOL_VERSION = '2024-11-05';
 const SERVER_NAME = 'flora-mcp-server';
 const SERVER_VERSION = '1.0.0';
-const PORT = process.env.MCP_SERVER_PORT || 3001;
+// Railway injects PORT dynamically; fall back to MCP_SERVER_PORT for local dev, then 3001
+const PORT = process.env.PORT || process.env.MCP_SERVER_PORT || 3001;
 const TRANSPORT_MODE = process.env.MCP_TRANSPORT_MODE || 'stdio'; // stdio or sse
 
 /**

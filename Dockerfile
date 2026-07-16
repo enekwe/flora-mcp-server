@@ -129,12 +129,13 @@ RUN mkdir -p /app/logs && \
 # Switch to non-root user
 USER flora-mcp
 
-# Expose port
-EXPOSE 4005
+# Expose port (Railway injects PORT dynamically, this is just documentation)
+EXPOSE 3001
 
 # Enhanced health check
+# Railway will set PORT dynamically; healthcheck uses the same PORT the app binds to
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f "http://localhost:${PORT:-4005}/health" || exit 1
+    CMD curl -f "http://localhost:${PORT:-3001}/health" || exit 1
 
 # Labels for container management
 LABEL maintainer="Flora Team" \
