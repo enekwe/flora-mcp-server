@@ -1,0 +1,38 @@
+# Cursor AI Rules for Flora MCP Server
+
+## CRITICAL: Read These Files Every Session Start
+
+Before doing ANY work in this repository, you MUST read:
+1. /FLORA_DEVELOPMENT_RULES.md
+2. /SKILLS.md
+
+This applies even after context compaction or when resuming work.
+
+## Railway Deployment Protocol (Mandatory)
+
+Before making ANY Railway-related changes:
+1. Read /FLORA_DEVELOPMENT_RULES.md (if not read this session)
+2. Read /SKILLS.md (if not read this session)
+3. Identify last working commit: `git log --oneline -5`
+4. Compare your changes with working baseline: `git diff 9dc71f6 <file>`
+5. Verify alignment with working configuration
+6. Test locally before deploying
+
+## Last Known Working Configuration
+- Commit: 9dc71f6
+- Check if this is still current: `git log --oneline -1`
+
+## Pre-Deployment Checklist
+
+Always verify:
+- [ ] No EXPOSE or HEALTHCHECK in Dockerfile
+- [ ] PORT fails fast in production (src/config/index.js)
+- [ ] Error handlers after microservice.initialize() (server.js)
+- [ ] All route handlers have `next` parameter (src/index.js)
+- [ ] Compared with git diff 9dc71f6
+- [ ] Syntax check passed: `node --check server.js`
+
+## Never Skip These Steps
+
+Even for "quick fixes" or "small changes" - always follow the protocol.
+Past failures were caused by skipping these steps.

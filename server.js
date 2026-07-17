@@ -48,10 +48,6 @@ const { errorHandler, notFound } = require('./src/middleware/errorHandler');
 
 const microservice = new FloraMcpServerMicroservice();
 
-// Error handlers must be registered after all routes
-microservice.app.use(notFound);
-microservice.app.use(errorHandler);
-
 async function main() {
   try {
     logger.info('Starting Flora MCP Server Microservice...');
@@ -59,6 +55,11 @@ async function main() {
     logger.info(`MongoDB URI: ${process.env.MONGODB_URI ? '[configured]' : '[MISSING]'}`);
 
     await microservice.initialize();
+
+    // Error handlers must be registered after all routes
+    microservice.app.use(notFound);
+    microservice.app.use(errorHandler);
+
     await microservice.start();
 
     logger.info('Flora MCP Server is ready to accept connections');

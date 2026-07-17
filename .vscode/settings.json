@@ -1,0 +1,74 @@
+{
+  "github.copilot.chat.codeGeneration.instructions": [
+    {
+      "text": "CRITICAL: Before making ANY Railway deployment changes in this repository, you MUST: 1) Read /FLORA_DEVELOPMENT_RULES.md completely, 2) Read /SKILLS.md completely, 3) Compare your changes with last working commit using 'git diff 9dc71f6 <file>', 4) Verify alignment with working configuration. This applies even after context compaction or session restart. Never skip these steps, even for 'quick fixes'."
+    }
+  ],
+  "github.copilot.chat.welcomeMessage": "⚠️ IMPORTANT: Before working on Railway deployments, read /FLORA_DEVELOPMENT_RULES.md and /SKILLS.md first. Then compare with working commit 9dc71f6.",
+
+  "files.associations": {
+    "CLAUDE.md": "markdown",
+    "AGENTS.md": "markdown",
+    "FLORA_DEVELOPMENT_RULES.md": "markdown",
+    "SKILLS.md": "markdown"
+  },
+
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true
+  },
+
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/.git": true
+  },
+
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+
+  "[markdown]": {
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "strings": "off",
+      "other": "off"
+    }
+  },
+
+  "todo-tree.general.tags": [
+    "BUG",
+    "HACK",
+    "FIXME",
+    "TODO",
+    "XXX",
+    "CRITICAL",
+    "RAILWAY"
+  ],
+
+  "todo-tree.highlights.customHighlight": {
+    "CRITICAL": {
+      "icon": "alert",
+      "foreground": "red",
+      "iconColour": "red"
+    },
+    "RAILWAY": {
+      "icon": "cloud-upload",
+      "foreground": "purple",
+      "iconColour": "purple"
+    }
+  }
+}

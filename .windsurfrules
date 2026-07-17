@@ -1,0 +1,60 @@
+# Windsurf AI Rules for Flora MCP Server
+
+## Session Initialization (Required Every Session)
+
+**BEFORE ANY WORK:**
+1. Read /FLORA_DEVELOPMENT_RULES.md completely
+2. Read /SKILLS.md completely
+3. Check last working commit: `git log --oneline -5`
+
+**This applies:**
+- First time in repository
+- After context compaction
+- After session restart
+- When context usage exceeds 50%
+
+## Railway Deployment Workflow (Mandatory)
+
+**For EVERY deployment (not just troubleshooting):**
+
+1. **Identify baseline:**
+   ```
+   git log --oneline -5
+   Last known working: 9dc71f6
+   ```
+
+2. **Compare before changing:**
+   ```
+   git diff 9dc71f6 Dockerfile
+   git diff 9dc71f6 src/config/index.js
+   git diff 9dc71f6 server.js
+   git diff 9dc71f6 src/index.js
+   ```
+
+3. **Verify requirements:**
+   - Dockerfile: No EXPOSE, no HEALTHCHECK
+   - PORT: Fail-fast in production
+   - Error handlers: After initialize()
+   - Route handlers: All have `next` parameter
+
+4. **Test before deploy:**
+   ```
+   node --check server.js
+   grep -c "async (req, res, next)" src/index.js
+   ```
+
+## Common Mistakes to Avoid
+
+❌ Making changes without reading FLORA_DEVELOPMENT_RULES.md
+❌ Skipping comparison with working commit
+❌ Adding EXPOSE to Dockerfile
+❌ Creating double fallbacks for PORT
+❌ Registering error handlers before routes
+❌ Missing `next` parameter in route handlers
+
+## Working Configuration Reference
+
+Last successful Railway deployment: commit 9dc71f6
+Date: Thu Jul 16 16:01:57 2026
+
+Always align changes with this baseline.

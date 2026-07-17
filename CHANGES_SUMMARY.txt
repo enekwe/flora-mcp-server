@@ -1,0 +1,74 @@
+================================================================================
+FLORA MCP SERVER - HEALTHCHECK FIX SUMMARY
+================================================================================
+
+ROOT CAUSE:
+-----------
+Express.js route handlers calling next(error) without 'next' parameter defined
+in function signature, causing ReferenceError when errors occur.
+
+SYMPTOMS:
+---------
+- Server starts successfully
+- MongoDB connects
+- Port 4005 listening
+- BUT: /health endpoint returns "service unavailable"
+- Railway healthchecks fail after 5 attempts
+
+FIXES APPLIED:
+--------------
+
+1. ADDED 'next' PARAMETER TO 8 ROUTE HANDLERS
+   File: src/index.js
+   Lines: 132, 144, 158, 170, 184, 198, 212, 224
+
+   Before: async (req, res) => {
+   After:  async (req, res, next) => {
+
+   Routes Fixed:
+   - POST /api/mcp/tools/work_orders/list
+   - POST /api/mcp/tools/work_orders/get
+   - POST /api/mcp/tools/tasks/update_status
+   - POST /api/mcp/tools/tasks/list
+   - POST /api/mcp/tools/provider/proxy
+   - POST /api/mcp/tools/context/boundary
+   - POST /api/mcp/tools/prompts/log
+   - POST /api/mcp/tools/prompts/retrieve
+
+2. FIXED ERROR HANDLER REGISTRATION TIMING
+   File: server.js
+   
+   Moved error handler registration from BEFORE initialize() to AFTER
+   initialize() to ensure proper middleware execution order.
+
+3. REMOVED DUPLICATE INITIALIZATION CODE
+   File: src/index.js
+   Lines: 768-785 (removed)
+   
+   Removed duplicate microservice instantiation and main() function
+   that conflicted with server.js entry point.
+
+VERIFICATION:
+-------------
+✓ Syntax check passed: node -c server.js && node -c src/index.js
+✓ No duplicate error handler registration
+✓ Proper middleware execution order
+✓ Clean module exports
+
+DEPLOYMENT:
+-----------
+Ready for Railway deployment via git push origin main
+
+EXPECTED RESULT:
+----------------
+Railway healthcheck will now PASS, service will show "healthy" status
+
+FILES MODIFIED:
+---------------
+1. /Users/cope/Passbook_Oracle/microservices/flora-mcp-server/src/index.js
+2. /Users/cope/Passbook_Oracle/microservices/flora-mcp-server/server.js
+
+RISK LEVEL: LOW
+ROLLBACK: Revert git commit if needed
+
+================================================================================

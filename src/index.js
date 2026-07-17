@@ -129,7 +129,7 @@ class FloraMcpServerMicroservice {
 
     mcpRouter.post('/tools/work_orders/list',
       mcpRbacMiddleware('workOrders', 'read'),
-      async (req, res) => {
+      async (req, res, next) => {
         try {
           const result = await handleWorkOrdersList(req.body.args || req.body, req.mcpAuth);
           res.json({ success: true, ...result });
@@ -141,7 +141,7 @@ class FloraMcpServerMicroservice {
 
     mcpRouter.post('/tools/work_orders/get',
       mcpRbacMiddleware('workOrders', 'read'),
-      async (req, res) => {
+      async (req, res, next) => {
         try {
           const result = await handleWorkOrdersGet(req.body.args || req.body, req.mcpAuth);
           res.json({ success: true, ...result });
@@ -155,7 +155,7 @@ class FloraMcpServerMicroservice {
 
     mcpRouter.post('/tools/tasks/update_status',
       mcpRbacMiddleware('tasks', 'update'),
-      async (req, res) => {
+      async (req, res, next) => {
         try {
           const result = await handleTaskUpdateStatus(req.body.args || req.body, req.mcpAuth);
           res.json({ success: true, ...result });
@@ -167,7 +167,7 @@ class FloraMcpServerMicroservice {
 
     mcpRouter.post('/tools/tasks/list',
       mcpRbacMiddleware('tasks', 'read'),
-      async (req, res) => {
+      async (req, res, next) => {
         try {
           const result = await handleTasksList(req.body.args || req.body, req.mcpAuth);
           res.json({ success: true, ...result });
@@ -181,7 +181,7 @@ class FloraMcpServerMicroservice {
 
     mcpRouter.post('/tools/provider/proxy',
       mcpRbacMiddleware('providerRouting', 'use'),
-      async (req, res) => {
+      async (req, res, next) => {
         try {
           const result = await handleProviderProxy(req.body.args || req.body, req.mcpAuth);
           res.json({ success: true, ...result });
@@ -195,7 +195,7 @@ class FloraMcpServerMicroservice {
 
     mcpRouter.post('/tools/context/boundary',
       mcpRbacMiddleware('contextBoundary', 'enforce'),
-      async (req, res) => {
+      async (req, res, next) => {
         try {
           const result = await handleContextBoundaryCheck(req.body.args || req.body, req.mcpAuth);
           res.json({ success: true, ...result });
@@ -209,7 +209,7 @@ class FloraMcpServerMicroservice {
 
     mcpRouter.post('/tools/prompts/log',
       mcpRbacMiddleware('promptVault', 'store'),
-      async (req, res) => {
+      async (req, res, next) => {
         try {
           const result = await handlePromptVaultStore(req.body.args || req.body, req.mcpAuth);
           res.json({ success: true, ...result });
@@ -221,7 +221,7 @@ class FloraMcpServerMicroservice {
 
     mcpRouter.post('/tools/prompts/retrieve',
       mcpRbacMiddleware('promptVault', 'read'),
-      async (req, res) => {
+      async (req, res, next) => {
         try {
           const result = await handlePromptVaultRetrieve(req.body.args || req.body, req.mcpAuth);
           res.json({ success: true, ...result });
@@ -763,25 +763,6 @@ class FloraMcpServerMicroservice {
       process.exit(1);
     }
   }
-}
-
-// Error handler must be registered after all routes
-const microservice = new FloraMcpServerMicroservice();
-microservice.app.use(notFound);
-microservice.app.use(errorHandler);
-
-async function main() {
-  try {
-    await microservice.initialize();
-    await microservice.start();
-  } catch (error) {
-    logger.error('Failed to start Flora MCP Server Microservice:', error);
-    process.exit(1);
-  }
-}
-
-if (require.main === module) {
-  main();
 }
 
 module.exports = FloraMcpServerMicroservice;
