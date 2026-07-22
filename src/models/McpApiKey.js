@@ -108,6 +108,11 @@ const McpApiKeySchema = new mongoose.Schema({
     promptVault: {
       read: { type: Boolean, default: false },
       store: { type: Boolean, default: true }
+    },
+    // Triggers real infra provisioning + LLM spend downstream — opt-in only, default disabled.
+    appKit: {
+      build: { type: Boolean, default: false },
+      read: { type: Boolean, default: false }
     }
   },
 

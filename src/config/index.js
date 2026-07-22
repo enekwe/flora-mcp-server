@@ -38,6 +38,9 @@ module.exports = {
   // Monolith API (for proxying to command-center-service and core services)
   MONOLITH_API_URL: process.env.MONOLITH_API_URL || 'http://api.railway.internal:3001',
   COMMAND_CENTER_API_URL: process.env.COMMAND_CENTER_API_URL || 'http://flora-command-center.railway.internal:4000',
+  // Fallback port matches flora-devops's own config.PORT default (4003) — see
+  // flora-devops/src/config/index.js. Only used if the env var isn't set explicitly.
+  APP_KIT_DEVOPS_API_URL: process.env.APP_KIT_DEVOPS_API_URL || 'http://flora-devops.railway.internal:4003',
 
   // Encryption
   CREDENTIAL_ENCRYPTION_KEY: process.env.CREDENTIAL_ENCRYPTION_KEY,
