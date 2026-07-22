@@ -14,6 +14,7 @@ const { handleTaskUpdateStatus, handleTasksList } = require('./tools/taskStatus'
 const { handleProviderProxy } = require('./tools/providerProxy');
 const { handleContextBoundaryCheck } = require('./tools/contextBoundary');
 const { handlePromptVaultStore, handlePromptVaultRetrieve } = require('./tools/promptVault');
+const { handleAppKitBuild, handleAppKitStatus } = require('./tools/appKit');
 
 // Models
 const McpApiKey = require('./models/McpApiKey');
@@ -34,6 +35,8 @@ const McpConnection = require('./models/McpConnection');
  *   context/boundary   — Check and apply context boundaries + PII redaction
  *   prompts/log        — Store interactions in the Prompt Vault
  *   prompts/retrieve   — Retrieve vault entries (requires vault:read permission)
+ *   app_kit/build      — Kick off a Flora App Kit custom-app build (flora-devops)
+ *   app_kit/status     — Read App Kit build phase/repo/deployUrl/driftScore
  *
  * Architecture: This microservice sits between the local IDE agent and
  * Flora's Control Plane (command-center-service + monolith), enforcing:
@@ -231,6 +234,32 @@ class FloraMcpServerMicroservice {
       }
     );
 
+    // ── App Kit ──────────────────────────────────────────────────────────────
+
+    mcpRouter.post('/tools/app_kit/build',
+      mcpRbacMiddleware('appKit', 'build'),
+      async (req, res, next) => {
+        try {
+          const result = await handleAppKitBuild(req.body.args || req.body, req.mcpAuth);
+          res.json({ success: true, ...result });
+        } catch (error) {
+          next(error);
+        }
+      }
+    );
+
+    mcpRouter.post('/tools/app_kit/status',
+      mcpRbacMiddleware('appKit', 'read'),
+      async (req, res, next) => {
+        try {
+          const result = await handleAppKitStatus(req.body.args || req.body, req.mcpAuth);
+          res.json({ success: true, ...result });
+        } catch (error) {
+          next(error);
+        }
+      }
+    );
+
     this.app.use('/api/mcp', mcpRouter);
   }
 
@@ -269,7 +298,9 @@ class FloraMcpServerMicroservice {
             tasks: { read: true, update: true, create: false },
             providerRouting: { use: true },
             contextBoundary: { read: true, enforce: true },
-            promptVault: { read: false, store: true }
+            promptVault: { read: false, store: true },
+            // Triggers real infra provisioning + LLM spend downstream — opt-in only, default disabled.
+            appKit: { build: false, read: false }
           },
           security: security || {
             allowedAgentTypes: [],
@@ -683,6 +714,51 @@ class FloraMcpServerMicroservice {
                 required: ['vaultId']
               },
               requiredPermission: 'promptVault:read'
+            },
+            {
+              name: 'app_kit/build',
+              description: 'Kick off a Flora App Kit custom-app build. Scaffolds, generates, tests, and deploys a governed app from a natural-language prompt + capability manifest. Status is reported back to Command Center\'s project timeline.',
+              inputSchema: {
+                type: 'object',
+                properties: {
+                  appName: { type: 'string', description: 'Name for the app to build' },
+                  prompt: { type: 'string', description: 'Natural-language description of what to build' },
+                  manifest: {
+                    type: 'object',
+                    description: 'Capability manifest — the hard boundary on data/systems/egress the app may use',
+                    properties: {
+                      dataScopes: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            resource: { type: 'string' },
+                            id: { type: 'string' },
+                            access: { type: 'string', enum: ['read', 'write'] }
+                          }
+                        }
+                      },
+                      systems: { type: 'array', items: { type: 'string' } },
+                      egress: { type: 'array', items: { type: 'string' } }
+                    }
+                  },
+                  deployTarget: { type: 'string', enum: ['railway', 'vercel'] }
+                },
+                required: ['appName', 'prompt', 'manifest']
+              },
+              requiredPermission: 'appKit:build'
+            },
+            {
+              name: 'app_kit/status',
+              description: 'Get current phase, repo, deploy URL, and drift score for an App Kit build you started. Scoped to your company — cannot read another company\'s build.',
+              inputSchema: {
+                type: 'object',
+                properties: {
+                  buildId: { type: 'string', description: 'App Kit build ID' }
+                },
+                required: ['buildId']
+              },
+              requiredPermission: 'appKit:read'
             }
           ]
         }
@@ -704,7 +780,7 @@ class FloraMcpServerMicroservice {
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
         environment: config.NODE_ENV,
-        mcpTools: 8,
+        mcpTools: 10,
         version: '1.0.0'
       });
     });
