@@ -48,7 +48,14 @@ async function handleAppKitBuild(args, mcpAuth) {
         headers: {
           'Authorization': `Bearer ${process.env.INTERNAL_SERVICE_TOKEN || ''}`,
           'X-Service-Name': config.SERVICE_NAME,
-          'X-MCP-Proxy': 'true'
+          'X-MCP-Proxy': 'true',
+          // devops's own App Kit auth check (authenticateService in its
+          // src/appkit/routes/index.js) looks for X-API-Key, not the
+          // Authorization/INTERNAL_SERVICE_TOKEN pair above — that pattern is
+          // for calls to the monolith (see workOrders.js/providerProxy.js),
+          // a different downstream service with a different secret. Must be
+          // set to the same value as devops's APP_KIT_SERVICE_KEY.
+          ...(process.env.APP_KIT_SERVICE_KEY ? { 'X-API-Key': process.env.APP_KIT_SERVICE_KEY } : {})
         },
         timeout: APP_KIT_TIMEOUT_MS
       }
@@ -102,7 +109,14 @@ async function handleAppKitStatus(args, mcpAuth) {
         headers: {
           'Authorization': `Bearer ${process.env.INTERNAL_SERVICE_TOKEN || ''}`,
           'X-Service-Name': config.SERVICE_NAME,
-          'X-MCP-Proxy': 'true'
+          'X-MCP-Proxy': 'true',
+          // devops's own App Kit auth check (authenticateService in its
+          // src/appkit/routes/index.js) looks for X-API-Key, not the
+          // Authorization/INTERNAL_SERVICE_TOKEN pair above — that pattern is
+          // for calls to the monolith (see workOrders.js/providerProxy.js),
+          // a different downstream service with a different secret. Must be
+          // set to the same value as devops's APP_KIT_SERVICE_KEY.
+          ...(process.env.APP_KIT_SERVICE_KEY ? { 'X-API-Key': process.env.APP_KIT_SERVICE_KEY } : {})
         },
         timeout: APP_KIT_TIMEOUT_MS
       }
